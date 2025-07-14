@@ -1,4 +1,4 @@
-// Populate city dropdown with cities and their lat/lon
+// ✅ Populate city dropdown
 function populateCities() {
   const cities = [
     { name: "Amsterdam", lat: 52.37, lon: 4.89 },
@@ -24,7 +24,7 @@ function populateCities() {
 
 window.onload = populateCities;
 
-// Fetch weather data and display it
+// ✅ Get weather forecast from 7timer
 async function getWeather() {
   const latLon = document.getElementById('city').value;
   if (!latLon) {
@@ -33,7 +33,7 @@ async function getWeather() {
   }
 
   const [lat, lon] = latLon.split(',');
-  const url = `http://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civil&output=json`;
+  const url = `https://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civil&output=json`;
 
   try {
     const response = await fetch(url);
@@ -41,11 +41,11 @@ async function getWeather() {
 
     const data = await response.json();
     const forecastDiv = document.getElementById('forecast');
-    forecastDiv.innerHTML = ""; // Clear previous results
+    forecastDiv.innerHTML = ""; // clear old data
 
     data.dataseries.slice(0, 7).forEach((day, index) => {
-      const currentDate = new Date();
-      currentDate.setDate(currentDate.getDate() + index);
+      const date = new Date();
+      date.setDate(date.getDate() + index);
 
       const weather = day.weather.toLowerCase();
       const temp = day.temp2m;
@@ -55,10 +55,10 @@ async function getWeather() {
       dayBox.classList.add('day');
 
       dayBox.innerHTML = `
-        <p><strong>${currentDate.toDateString()}</strong></p>
+        <p><strong>${date.toDateString()}</strong></p>
         <p>Weather: ${day.weather}</p>
         <p>Temperature: ${temp}°C</p>
-        <img src="images/${iconName}" alt="${weather}" width="50">
+        <img src="images/${iconName}" alt="${weather}" width="50" />
       `;
 
       forecastDiv.appendChild(dayBox);
@@ -70,8 +70,10 @@ async function getWeather() {
   }
 }
 
+// ✅ Match weather condition to icon
 function matchIcon(condition) {
   condition = condition.toLowerCase();
+
   if (condition.includes("clear")) return "clear.png";
   if (condition.includes("pcloudy")) return "pcloudy.png";
   if (condition.includes("mcloudy")) return "mcloudy.png";
@@ -90,5 +92,5 @@ function matchIcon(condition) {
   if (condition.includes("cloudy-day")) return "cloudy-day.png";
   if (condition.includes("cloudy-night")) return "cloudy-night.png";
 
-  return "pccloudy.png"; // Default fallback
+  return "pccloudy.png"; // default
 }
